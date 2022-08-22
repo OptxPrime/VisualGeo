@@ -1,13 +1,4 @@
-const orientation = (a, b, c) => {
-    let v = a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y);
-    if (v < 0) return -1; // clockwise
-    if (v > 0) return +1; // counter-clockwise
-    return 0;
-}
-
-const cw = (a, b, c) => {
-    return orientation(a, b, c) < 0;
-}
+import {orientation, cw} from "./helpers";
 
 // function that returns clone of a hull after adjusting its y-coord to match canvas standard
 const thull = (hull) => {

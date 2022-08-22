@@ -1,12 +1,23 @@
 import './App.css';
-import {Canvas} from "./components/Canvas";
+
 import React from 'react';
+import {BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
+
+import {Homepage} from "./pages/Homepage/Homepage";
+import {ConvexHull} from "./pages/ConvexHull/ConvexHull";
+
 
 function App() {
     return (
         <div className="App">
             <header className="App-header">
-                <Canvas/>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="convex-hull" element={<ConvexHull/>}/>
+                        <Route path="home" element={<Homepage/>}/>
+                        <Route path="*" element={<Navigate to="/home" replace={true}/>}/>
+                    </Routes>
+                </BrowserRouter>
             </header>
         </div>
     );

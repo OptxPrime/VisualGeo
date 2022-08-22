@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {Stage, Layer, Text, Circle, Line,} from 'react-konva';
 
-import './Canvas.css';
-import {grahamScan} from "../helpers";
+import './ConvexHull.css';
+import {grahamScan} from "../../geom/convex-hull";
 
 const generateShapes = () => {
     return [...Array(10)].map((_, i) => ({
@@ -24,7 +24,7 @@ const transformY = (points) => {
 }
 
 
-export const Canvas = () => {
+export const ConvexHull = () => {
 
     // const [points, setPoints] = useState(generateShapes());
     const [points, setPoints] = useState([]);
@@ -112,7 +112,7 @@ export const Canvas = () => {
                     }
                 </Layer>
             </Stage>
-            <div className="footer">
+            <div className="footer w3-indigo">
                 <input type="radio" value="Graham Scan" name="algo"/> Graham Scan
                 <input type="radio" value="Gift Wrapping" name="algo"/> Gift Wrapping
                 <br/>
@@ -143,6 +143,5 @@ export const Canvas = () => {
 
             </div>
         </>
-    )
-        ;
+    );
 }
