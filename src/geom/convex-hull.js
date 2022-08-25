@@ -1,4 +1,4 @@
-import {orientation, cw} from "./helpers";
+import {orientation, cw, tY} from "./helpers";
 
 // function that returns clone of a hull after adjusting its y-coord to match canvas standard
 const thull = (hull) => {
@@ -9,12 +9,6 @@ const thull = (hull) => {
         }
     });
 }
-
-const tY = (pt) => {
-    return {
-        x: pt.x, y: pt.y * (-1)
-    }
-};
 
 export const grahamScan = (points) => {
     let lowestPoint = points.reduce(

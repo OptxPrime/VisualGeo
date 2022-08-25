@@ -3,6 +3,9 @@ import {Stage, Layer, Text, Circle, Line,} from 'react-konva';
 
 import './ConvexHull.css';
 import {grahamScan} from "../../geom/convex-hull";
+import {giftWrapping} from "../../geom/gift-wrapping";
+import {GrahamScanSteps} from "../../components/GrahamScanSteps";
+import {GiftWrappingSteps} from "../../components/GiftWrappingSteps";
 
 const generateShapes = () => {
     return [...Array(10)].map((_, i) => ({
@@ -32,6 +35,15 @@ export const ConvexHull = () => {
     const [iterations, setIterations] = useState([]);
     const [stepNumber, setStepNumber] = useState(null);
     const [showStepByStep, setShowStepByStep] = useState(false);
+    const [algo, setAlgo] = useState('graham');
+
+    const handleAlgoChange = (e) => {
+        setAlgo(e.target.value);
+        setStepNumber(1);
+        setShowStepByStep(false);
+        setHull([]);
+        setIterations([]);
+    }
 
     const handleNewPoint = (e) => {
         setPoints([...points, {x: e.evt.clientX, y: e.evt.clientY}]);
@@ -39,7 +51,15 @@ export const ConvexHull = () => {
 
     const findConvexHull = () => {
         let pts = transformY(points);
-        let {hull, iterations} = grahamScan(pts);
+        let hull, iterations;
+        if (algo === 'graham') {
+            ({hull, iterations} = grahamScan(pts));
+        } else if (algo === 'gift') {
+            ({hull, iterations} = giftWrapping(pts));
+        } else {
+            ({hull, iterations} = grahamScan(pts));
+        }
+
         let h = transformY(hull);
         setHull(h);
         setIterations(iterations);
@@ -59,87 +79,71 @@ export const ConvexHull = () => {
                     {
                         !showStepByStep || stepNumber >= iterations.length ?
                             hull.map(({x, y}, i) => {
-                                if (i > 0) return <Line points={[x, y, hull[i - 1].x, hull[i - 1].y]}
-                                                        stroke="green"/>
-                                return <Line points={[x, y, hull[hull.length - 1].x, hull[hull.length - 1].y]}
-                                             stroke="green"/>
+                                return (
+                                    <>
+                                        <Circle x={x} y={y} radius={6} fill="pink"/>
+                                        {
+                                            i > 0 ?
+                                                <Line
+                                                    points={[x, y, hull[i - 1].x, hull[i - 1].y]}
+                                                    stroke="blue"
+                                                />
+                                                :
+                                                <Line
+                                                    points={[x, y, hull[hull.length - 1].x, hull[hull.length - 1].y]}
+                                                    stroke="blue"
+                                                />
+                                        }
+                                    </>
+                                );
                             })
                             : stepNumber < iterations.length ?
-                                <>
-                                    {
-                                        iterations[stepNumber].hull ?
-                                            iterations[stepNumber].hull.map(({x, y}, i) => {
-                                                if (i > 0) return <Line
-                                                    points={[
-                                                        x,
-                                                        y,
-                                                        iterations[stepNumber].hull[i - 1].x,
-                                                        iterations[stepNumber].hull[i - 1].y
-                                                    ]}
-                                                    stroke="green"/>
+                                algo === 'graham' ?
+                                    <GrahamScanSteps stepNumber={stepNumber} iterations={iterations}/>
+                                    : algo === 'gift' ?
+                                        <GiftWrappingSteps stepNumber={stepNumber} iterations={iterations}/>
 
-                                            }) : null
-                                    }
-                                    {
-                                        iterations[stepNumber].change.type === 'remove' ?
-                                            <>
-                                                <Circle x={iterations[stepNumber].change.b.x}
-                                                        y={iterations[stepNumber].change.b.y}
-                                                        radius={5}
-                                                        fill="red"
-                                                />
-                                                <Line
-                                                    points={[
-                                                        iterations[stepNumber].change.a.x,
-                                                        iterations[stepNumber].change.a.y,
-                                                        iterations[stepNumber].change.b.x,
-                                                        iterations[stepNumber].change.b.y,
-                                                        iterations[stepNumber].change.c.x,
-                                                        iterations[stepNumber].change.c.y
-                                                    ]}
-                                                    stroke="red"/>
-                                            </> : iterations[stepNumber].change.type === 'add' ?
-                                                <>
-                                                    <Circle x={iterations[stepNumber].change.b.x}
-                                                            y={iterations[stepNumber].change.b.y}
-                                                            radius={5}
-                                                            fill="blue"
-                                                    />
-                                                </> : null
-                                    }
-                                </>
-                                : null
+                                        : null : null
+                        // : algo === 'gift' ?
+
                     }
                 </Layer>
             </Stage>
             <div className="footer w3-indigo">
-                <input type="radio" value="Graham Scan" name="algo"/> Graham Scan
-                <input type="radio" value="Gift Wrapping" name="algo"/> Gift Wrapping
+                <input type="radio" value="graham" name="algo" onChange={handleAlgoChange}/> Graham Scan
+                <input type="radio" value="gift" name="algo" onChange={handleAlgoChange}/> Gift Wrapping
                 <br/>
                 <button className="w3-btn w3-blue" onClick={() => {
-                    setShowStepByStep(true);
-                    setStepNumber(1);
                     findConvexHull();
                 }
                 }>Find convex hull
                 </button>
                 <br/>
-                <button className="w3-btn w3-black w3-margin"
-                        onClick={() => {
-                            if (stepNumber < iterations.length) setStepNumber(stepNumber + 1);
-                        }}
-                > +
-                </button>
+
                 {
                     showStepByStep ?
-                        <p style={{display: "inline-block"}}> Step {stepNumber}/{iterations.length} </p> : null
+                        <>
+                            <button className="w3-btn w3-black w3-margin"
+                                    onClick={() => {
+                                        if (stepNumber < iterations.length) setStepNumber(stepNumber + 1);
+                                    }}
+                            > +
+                            </button>
+                            <p style={{display: "inline-block"}}> Step {stepNumber}/{iterations.length} </p>
+                            <button className="w3-btn w3-black w3-margin"
+                                    style={{display: "inline-block"}}
+                                    onClick={() => {
+                                        if (stepNumber > 0) setStepNumber(stepNumber - 1);
+                                    }}> -
+                            </button>
+                        </> :
+                        <button className="w3-btn w3-roung w3-black"
+                                onClick={() => {
+                                    setShowStepByStep(true);
+                                    setStepNumber(1);
+                                }}
+                        > Show steps </button>
                 }
-                <button className="w3-btn w3-black w3-margin"
-                        style={{display: "inline-block"}}
-                        onClick={() => {
-                            if (stepNumber > 0) setStepNumber(stepNumber - 1);
-                        }}> -
-                </button>
 
             </div>
         </>
