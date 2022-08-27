@@ -50,5 +50,5 @@ export const grahamScan = (points) => {
             change: {type: 'add', a: tY(hull[hull.length - 1]), b: tY(pt)}
         });
     }
-    return {hull, iterations};
+    return {hull, iterations, sortedPoints: points};
 }

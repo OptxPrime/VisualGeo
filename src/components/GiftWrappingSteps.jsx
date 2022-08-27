@@ -2,39 +2,46 @@ import React from 'react';
 import {Circle, Line} from "react-konva";
 
 export const GiftWrappingSteps = ({stepNumber, iterations}) => {
+    
+    let current_hull = iterations[stepNumber].hull;
+    let bestCandidateSoFar = iterations[stepNumber].bestCandidateSoFar;
+    
     return (
         <>
             {
-                iterations[stepNumber].bestCandidateSoFar ?
+                bestCandidateSoFar ?
                     <Circle
-                        x={iterations[stepNumber].bestCandidateSoFar.x}
-                        y={iterations[stepNumber].bestCandidateSoFar.y}
+                        x={bestCandidateSoFar.x}
+                        y={bestCandidateSoFar.y}
                         radius={5}
                         fill="yellow"
                     /> : null
             }
             {
-                iterations[stepNumber].hull ?
+                current_hull?
                     iterations[stepNumber].hull.map(({x, y}, i) => {
-                        if (i > 0) return <Line
-                            points={[
-                                x,
-                                y,
-                                iterations[stepNumber].hull[i - 1].x,
-                                iterations[stepNumber].hull[i - 1].y
-                            ]}
-                            stroke="blue"/>
+                        return(
+                            <>
+                                <Circle x={x} y={y} radius={6} fill="pink"/>
+                                {
+                                    (i > 0) ? <Line
+                                        points={[
+                                            x,
+                                            y,
+                                            iterations[stepNumber].hull[i - 1].x,
+                                            iterations[stepNumber].hull[i - 1].y
+                                        ]}
+                                        stroke="blue"
+                                    /> : null
+                                }
+                            </>
+                        );
 
                     }) : null
             }
             {
                 iterations[stepNumber].change.type === 'good-check' ?
                     <>
-                        {/*<Circle x={iterations[stepNumber].change.b.x}*/}
-                        {/*        y={iterations[stepNumber].change.b.y}*/}
-                        {/*        radius={5}*/}
-                        {/*        fill="red"*/}
-                        {/*/>*/}
                         <Line
                             points={[
                                 iterations[stepNumber].change.a.x,
@@ -44,14 +51,21 @@ export const GiftWrappingSteps = ({stepNumber, iterations}) => {
                                 iterations[stepNumber].change.c.x,
                                 iterations[stepNumber].change.c.y
                             ]}
-                            stroke="green"/>
+                            stroke="green"
+                        />
+                        <Line
+                            points={[
+                                iterations[stepNumber].change.a.x,
+                                iterations[stepNumber].change.a.y,
+                                iterations[stepNumber].change.c.x,
+                                iterations[stepNumber].change.c.y
+                            ]}
+                            stroke="white"
+                            dash={[3,3]}
+                            opacity={0.5}
+                        />
                     </> : iterations[stepNumber].change.type === 'bad-check' ?
                         <>
-                            {/*<Circle x={iterations[stepNumber].change.b.x}*/}
-                            {/*        y={iterations[stepNumber].change.b.y}*/}
-                            {/*        radius={5}*/}
-                            {/*        fill="blue"*/}
-                            {/*/>*/}
                             <Line
                                 points={[
                                     iterations[stepNumber].change.a.x,
@@ -61,7 +75,19 @@ export const GiftWrappingSteps = ({stepNumber, iterations}) => {
                                     iterations[stepNumber].change.c.x,
                                     iterations[stepNumber].change.c.y
                                 ]}
-                                stroke="red"/>
+                                stroke="red"
+                            />
+                            <Line
+                                points={[
+                                    iterations[stepNumber].change.a.x,
+                                    iterations[stepNumber].change.a.y,
+                                    iterations[stepNumber].change.c.x,
+                                    iterations[stepNumber].change.c.y
+                                ]}
+                                stroke="white"
+                                dash={[3,3]}
+                                opacity={0.5}
+                            />
                         </> : null
             }
         </>

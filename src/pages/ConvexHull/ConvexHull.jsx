@@ -29,13 +29,14 @@ const transformY = (points) => {
 
 export const ConvexHull = () => {
 
-    // const [points, setPoints] = useState(generateShapes());
     const [points, setPoints] = useState([]);
+    const [sortedPoints, setSortedPoints] = useState([]);
     const [hull, setHull] = useState([]);
     const [iterations, setIterations] = useState([]);
     const [stepNumber, setStepNumber] = useState(null);
     const [showStepByStep, setShowStepByStep] = useState(false);
     const [algo, setAlgo] = useState('graham');
+    const [error, setError] = useState('');
 
     const handleAlgoChange = (e) => {
         setAlgo(e.target.value);
@@ -49,15 +50,33 @@ export const ConvexHull = () => {
         setPoints([...points, {x: e.evt.clientX, y: e.evt.clientY}]);
     }
 
+    const clear = () => {
+        setShowStepByStep(false);
+        setPoints([]);
+        setSortedPoints([]);
+        setHull([]);
+        setIterations([]);
+        setError('');
+    }
+
     const findConvexHull = () => {
+        if(points.length < 3){
+            setError("3 points required");
+            return;
+        }
+        setError('');
+        setShowStepByStep(false);
+        setStepNumber(0);
         let pts = transformY(points);
-        let hull, iterations;
+        let hull, iterations, sortedPoints;
         if (algo === 'graham') {
-            ({hull, iterations} = grahamScan(pts));
+            ({hull, iterations, sortedPoints} = grahamScan(pts));
+            setSortedPoints(transformY(sortedPoints));
         } else if (algo === 'gift') {
             ({hull, iterations} = giftWrapping(pts));
         } else {
-            ({hull, iterations} = grahamScan(pts));
+            ({hull, iterations, sortedPoints} = grahamScan(pts));
+            setSortedPoints(transformY(sortedPoints));
         }
 
         let h = transformY(hull);
@@ -69,7 +88,7 @@ export const ConvexHull = () => {
         <>
             <Stage width={window.innerWidth} height={window.innerHeight} onMouseDown={handleNewPoint}>
                 <Layer>
-                    <Text fill="white" align="center" text="Click to add point" fontSize={20}/>
+                    <Text fill="white" padding={20} opacity={0.5} width={window.innerWidth} align="center" text="Click to add point" fontSize={20}/>
                     {
                         points.map(({x, y}) => {
                             return <Circle x={x} y={y} radius={5} fill="orange"/>
@@ -99,7 +118,7 @@ export const ConvexHull = () => {
                             })
                             : stepNumber < iterations.length ?
                                 algo === 'graham' ?
-                                    <GrahamScanSteps stepNumber={stepNumber} iterations={iterations}/>
+                                    <GrahamScanSteps stepNumber={stepNumber} iterations={iterations} allPoints={sortedPoints}/>
                                     : algo === 'gift' ?
                                         <GiftWrappingSteps stepNumber={stepNumber} iterations={iterations}/>
 
@@ -110,39 +129,47 @@ export const ConvexHull = () => {
                 </Layer>
             </Stage>
             <div className="footer w3-indigo">
-                <input type="radio" value="graham" name="algo" onChange={handleAlgoChange}/> Graham Scan
-                <input type="radio" value="gift" name="algo" onChange={handleAlgoChange}/> Gift Wrapping
+
+                <div>
+                    <input className="w3-margin-left w3-margin-right" type="radio" value="graham" name="algo" checked={algo === 'graham'} onChange={handleAlgoChange}/> Graham Scan
+                    <input className="w3-margin-left w3-margin-right" type="radio" value="gift" name="algo" checked={algo === 'gift'} onChange={handleAlgoChange}/> Gift Wrapping
+                    <button className="w3-margin-left w3-margin-right w3-btn w3-black w3-round-large" onClick={()=>clear()}> Clear points </button>
+                </div>
                 <br/>
-                <button className="w3-btn w3-blue" onClick={() => {
+                <button className="w3-btn w3-blue w3-margin w3-round-large" onClick={() => {
                     findConvexHull();
                 }
                 }>Find convex hull
                 </button>
-                <br/>
-
+                {
+                    error ?
+                        <p style={{display:"inline-block", color:"red", fontWeight:'bold'}} className="w3-margin"> {error} </p>
+                        : null
+                }
                 {
                     showStepByStep ?
                         <>
-                            <button className="w3-btn w3-black w3-margin"
+                            <button className="w3-btn w3-round-large w3-black w3-margin"
                                     onClick={() => {
                                         if (stepNumber < iterations.length) setStepNumber(stepNumber + 1);
                                     }}
                             > +
                             </button>
                             <p style={{display: "inline-block"}}> Step {stepNumber}/{iterations.length} </p>
-                            <button className="w3-btn w3-black w3-margin"
+                            <button className="w3-btn w3-round-large w3-black w3-margin"
                                     style={{display: "inline-block"}}
                                     onClick={() => {
                                         if (stepNumber > 0) setStepNumber(stepNumber - 1);
                                     }}> -
                             </button>
                         </> :
-                        <button className="w3-btn w3-roung w3-black"
+                        iterations.length ?
+                        <button className="w3-btn w3-round-large w3-margin w3-black"
                                 onClick={() => {
                                     setShowStepByStep(true);
                                     setStepNumber(1);
                                 }}
-                        > Show steps </button>
+                        > Show steps </button> : null
                 }
 
             </div>

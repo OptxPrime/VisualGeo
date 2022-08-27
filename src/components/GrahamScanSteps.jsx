@@ -1,12 +1,34 @@
 import React from 'react';
 import {Circle, Line} from "react-konva";
 
-export const GrahamScanSteps = ({stepNumber, iterations}) => {
+export const GrahamScanSteps = ({stepNumber, iterations, allPoints}) => {
+    
+    let current_hull = iterations[stepNumber].hull;
+    let iteration_change = iterations[stepNumber].change;
+
     return (
         <>
             {
-                iterations[stepNumber].hull ?
-                    iterations[stepNumber].hull.map(({x, y}, i) => {
+                allPoints ?
+                    allPoints.map(({x, y}) => {
+                        return(
+                            <Line
+                            points={[
+                                x,
+                                y,
+                                allPoints[0].x,
+                                allPoints[0].y
+                            ]}
+                            stroke="white"
+                            dash={[3,3]}
+                            opacity={0.5}
+                        />
+                        );
+                    }) : null
+            }
+            {
+               current_hull ?
+                   current_hull.map(({x, y}, i) => {
                         return (
                             <>
                                 <Circle x={x} y={y} radius={6} fill="pink"/>
@@ -16,38 +38,39 @@ export const GrahamScanSteps = ({stepNumber, iterations}) => {
                                             points={[
                                                 x,
                                                 y,
-                                                iterations[stepNumber].hull[i - 1].x,
-                                                iterations[stepNumber].hull[i - 1].y
+                                               current_hull[i - 1].x,
+                                               current_hull[i - 1].y
                                             ]}
-                                            stroke="blue"/> : null
-
+                                            stroke="blue"
+                                        />
+                                        : null
                                 }
                             </>
                         );
                     }) : null
             }
             {
-                iterations[stepNumber].change.type === 'remove' ?
+                iteration_change.type === 'remove' ?
                     <>
-                        <Circle x={iterations[stepNumber].change.b.x}
-                                y={iterations[stepNumber].change.b.y}
+                        <Circle x={iteration_change.b.x}
+                                y={iteration_change.b.y}
                                 radius={5}
                                 fill="red"
                         />
                         <Line
                             points={[
-                                iterations[stepNumber].change.a.x,
-                                iterations[stepNumber].change.a.y,
-                                iterations[stepNumber].change.b.x,
-                                iterations[stepNumber].change.b.y,
-                                iterations[stepNumber].change.c.x,
-                                iterations[stepNumber].change.c.y
+                                iteration_change.a.x,
+                                iteration_change.a.y,
+                                iteration_change.b.x,
+                                iteration_change.b.y,
+                                iteration_change.c.x,
+                                iteration_change.c.y
                             ]}
                             stroke="red"/>
-                    </> : iterations[stepNumber].change.type === 'add' ?
+                    </> : iteration_change.type === 'add' ?
                         <>
-                            <Circle x={iterations[stepNumber].change.b.x}
-                                    y={iterations[stepNumber].change.b.y}
+                            <Circle x={iteration_change.b.x}
+                                    y={iteration_change.b.y}
                                     radius={5}
                                     fill="blue"
                             />

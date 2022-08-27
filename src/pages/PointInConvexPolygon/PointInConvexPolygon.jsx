@@ -82,7 +82,7 @@ export const PointInConvexPolygon = () => {
         <>
             <Stage width={window.innerWidth} height={window.innerHeight} onMouseDown={handleNewPoint}>
                 <Layer>
-                    <Text fill="white" align="center" width={window.innerWidth} text="Click to add point" fontSize={20}/>
+                    <Text fill="white" padding={20} opacity={0.5} align="center" width={window.innerWidth} text="Click to add point" fontSize={20}/>
                     {
                         polygon.map(({x, y}, i) => {
                             return <Circle x={x} y={y} radius={5} fill="magenta"/>
@@ -123,10 +123,9 @@ export const PointInConvexPolygon = () => {
                            onChange={handleModeChange}/> Polygon
                     <input className="w3-margin-left w3-margin-right" type="radio" value="point" checked={mode === 'point'} name="mode"
                            onChange={handleModeChange}/> Point
-                    <button className="w3-margin-left w3-margin-right w3-btn w3-black w3-round-large" onClick={()=>clear()}> Reset </button>
+                    <button className="w3-margin-left w3-margin-right w3-btn w3-black w3-round-large" onClick={()=>clear()}> Clear points </button>
                 </div>
 
-                {/*<br/>*/}
                 <button className="w3-btn w3-blue w3-round-large" onClick={() => {
                     pointInsidePolygon();
                 }
@@ -138,7 +137,6 @@ export const PointInConvexPolygon = () => {
                             : isInside === false ? <p style={{display:"inline-block", color:"red", fontWeight:'bold'}} className="w3-margin"> Outside </p>
                                 : null
                 }
-                <br/>
                 {
                     showStepByStep ?
                         <>
