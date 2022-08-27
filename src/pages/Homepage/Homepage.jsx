@@ -10,14 +10,21 @@ export const Homepage = () => {
                 <h2 style={{fontWeigth: "700"}}>VisualGeo</h2>
                 <h6 style={{color: "gray"}}> v1.0.0 </h6>
                 <div style={{height: '10%'}}></div>
-                <ul className="w3-ul w3-xlarge w3-center w3-pale-blue w3-hover-indigo">
+                <ul className="w3-ul w3-xlarge w3-center w3-pale-blue">
                     <li className="w3-padding-small">
-                        <NavLink className="w3-btn"
+                        <NavLink className="w3-btn w3-hover-indigo"
                                  key="convex-hull"
                                  style={{width: '100%'}}
                                  to={'/convex-hull'}
                         >
                             Convex Hull
+                        </NavLink>
+                        <NavLink className="w3-btn w3-hover-indigo"
+                                 key="point-in-a-convex-polygon"
+                                 style={{width: '100%'}}
+                                 to={'/point-in-a-convex-polygon'}
+                        >
+                            Point In A Convex Polygon
                         </NavLink>
                     </li>
                 </ul>
