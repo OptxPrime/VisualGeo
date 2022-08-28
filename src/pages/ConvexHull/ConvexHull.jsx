@@ -6,6 +6,8 @@ import {grahamScan} from "../../geom/convex-hull";
 import {giftWrapping} from "../../geom/gift-wrapping";
 import {GrahamScanSteps} from "../../components/GrahamScanSteps";
 import {GiftWrappingSteps} from "../../components/GiftWrappingSteps";
+import {AlgoDescription} from "../../components/AlgoDescription";
+import {NavLink} from "react-router-dom";
 
 const generateShapes = () => {
     return [...Array(10)].map((_, i) => ({
@@ -36,6 +38,7 @@ export const ConvexHull = () => {
     const [stepNumber, setStepNumber] = useState(null);
     const [showStepByStep, setShowStepByStep] = useState(false);
     const [algo, setAlgo] = useState('graham');
+    const [view, setView] = useState('visual');
     const [error, setError] = useState('');
 
     const handleAlgoChange = (e) => {
@@ -44,6 +47,11 @@ export const ConvexHull = () => {
         setShowStepByStep(false);
         setHull([]);
         setIterations([]);
+    }
+
+    const switchView = () => {
+        if(view === 'visual') setView('description');
+        else setView('visual');
     }
 
     const handleNewPoint = (e) => {
@@ -86,48 +94,70 @@ export const ConvexHull = () => {
 
     return (
         <>
-            <Stage width={window.innerWidth} height={window.innerHeight} onMouseDown={handleNewPoint}>
-                <Layer>
-                    <Text fill="white" padding={20} opacity={0.5} width={window.innerWidth} align="center" text="Click to add point" fontSize={20}/>
-                    {
-                        points.map(({x, y}) => {
-                            return <Circle x={x} y={y} radius={5} fill="orange"/>
-                        })
-                    }
+            <button
+                className="switch-button w3-button w3-round-large w3-black w3-margin"
+                onClick={() => switchView()}
+            >
+                {algo==='graham' ? 'Graham Scan ' : 'Gift Wrapping '} {view === 'visual' ? 'Description' : 'Visual'}
+            </button>
+            <NavLink style={{textDecoration:"none"}} to="/home">
+                <button
+                    className="home-button w3-button w3-round-large w3-black w3-margin"
+                >
+                    Home
+                </button>
+            </NavLink>
+            {
+                view === 'description' ?
+                    // <AlgoDescription title={strings[algo].title} description={strings[algo].description} paragraphs={strings[algo].paragraphs}/>
+                    <AlgoDescription algo={algo} />
+                    :
+                    <Stage width={window.innerWidth} height={window.innerHeight} onMouseDown={handleNewPoint}>
+                        <Layer>
+                            <Text fill="white" padding={20} opacity={0.5} width={window.innerWidth} align="center"
+                                  text="Click to add point" fontSize={20}/>
+                            {
+                                points.map(({x, y}) => {
+                                    return <Circle x={x} y={y} radius={5} fill="orange"/>
+                                })
+                            }
 
-                    {
-                        !showStepByStep || stepNumber >= iterations.length ?
-                            hull.map(({x, y}, i) => {
-                                return (
-                                    <>
-                                        <Circle x={x} y={y} radius={6} fill="pink"/>
-                                        {
-                                            i > 0 ?
-                                                <Line
-                                                    points={[x, y, hull[i - 1].x, hull[i - 1].y]}
-                                                    stroke="blue"
-                                                />
-                                                :
-                                                <Line
-                                                    points={[x, y, hull[hull.length - 1].x, hull[hull.length - 1].y]}
-                                                    stroke="blue"
-                                                />
-                                        }
-                                    </>
-                                );
-                            })
-                            : stepNumber < iterations.length ?
-                                algo === 'graham' ?
-                                    <GrahamScanSteps stepNumber={stepNumber} iterations={iterations} allPoints={sortedPoints}/>
-                                    : algo === 'gift' ?
-                                        <GiftWrappingSteps stepNumber={stepNumber} iterations={iterations}/>
+                            {
+                                !showStepByStep || stepNumber >= iterations.length ?
+                                    hull.map(({x, y}, i) => {
+                                        return (
+                                            <>
+                                                <Circle x={x} y={y} radius={6} fill="pink"/>
+                                                {
+                                                    i > 0 ?
+                                                        <Line
+                                                            points={[x, y, hull[i - 1].x, hull[i - 1].y]}
+                                                            stroke="blue"
+                                                        />
+                                                        :
+                                                        <Line
+                                                            points={[x, y, hull[hull.length - 1].x, hull[hull.length - 1].y]}
+                                                            stroke="blue"
+                                                        />
+                                                }
+                                            </>
+                                        );
+                                    })
+                                    : stepNumber < iterations.length ?
+                                        algo === 'graham' ?
+                                            <GrahamScanSteps stepNumber={stepNumber} iterations={iterations}
+                                                             allPoints={sortedPoints}/>
+                                            : algo === 'gift' ?
+                                                <GiftWrappingSteps stepNumber={stepNumber} iterations={iterations}/>
 
-                                        : null : null
-                        // : algo === 'gift' ?
+                                                : null : null
+                                // : algo === 'gift' ?
 
-                    }
-                </Layer>
-            </Stage>
+                            }
+                        </Layer>
+                    </Stage>
+            }
+            {view === 'visual' ?
             <div className="footer w3-indigo">
 
                 <div>
@@ -172,7 +202,7 @@ export const ConvexHull = () => {
                         > Show steps </button> : null
                 }
 
-            </div>
+            </div> : null}
         </>
     );
 }
