@@ -24,6 +24,19 @@ export const isInsideTriangle = (a, b, c, p) => {
     );
 }
 
+// https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
+export const doSegmentsIntersect = (p1, q1, p2, q2) => {
+    let o1 = orientation(p1, q1, p2);
+    let o2 = orientation(p1, q1, q2);
+    let o3 = orientation(p2, q2, p1);
+    let o4 = orientation(p2, q2, q1);
+
+    // General case
+    if (o1 != o2 && o3 != o4)
+        return true;
+    // to do: add special cases
+}
+
 export const tY = (pt) => {
     return {
         x: pt.x, y: pt.y * (-1)

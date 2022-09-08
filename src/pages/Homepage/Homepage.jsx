@@ -26,6 +26,13 @@ export const Homepage = () => {
                         >
                             Point In A Convex Polygon
                         </NavLink>
+                        <NavLink className="w3-btn w3-hover-pale-blue"
+                                 key="triangulation"
+                                 style={{width: '100%'}}
+                                 to={'/triangulation'}
+                        >
+                            Triangulation
+                        </NavLink>
                     </li>
                 </ul>
             </div>

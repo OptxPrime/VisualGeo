@@ -5,7 +5,8 @@ export const AlgoDescription = ({algo}) => {
             algo === 'graham' ? <GrahamScanDescription />
                 : algo === 'gift' ? <GiftWrappingDescription />
                     : algo === 'point-in-polygon' ? <PointInConvexPolygonDescription/>
-                        : null
+                        : algo === 'triangulation' ? <Triangulation/>
+                            : null
     );
 }
 
@@ -13,8 +14,8 @@ const orientationLink = "https://cp-algorithms.com/geometry/oriented-triangle-ar
 
 const GrahamScanDescription = () => {
     return (
-        <div style={{display:"flex", justifyContent:"center", width:"75%", minWidth:"300px"}}>
-            <h1 style={{position:"fixed", top:'1em', margin:"0 auto"}}> Graham Scan Algorithm </h1>
+        <div style={{display:"flex", justifyContent:"center", width:"75%", minWidth:"300px", flexDirection:"column"}}>
+            <h1 style={{margin:"0 auto", marginTop:"2em"}}> Graham Scan Algorithm </h1>
             <div style={{display:"flex", flexDirection:"column"}}>
 
                 <p className="algo-desc-paragraph">
@@ -57,10 +58,9 @@ const GrahamScanDescription = () => {
 
 export const GiftWrappingDescription = () => {
     return(
-        <div style={{display:"flex", justifyContent:"center", width:"75%", minWidth:"300px"}}>
-            <h1 style={{position:"fixed", top:'1em', margin:"0 auto"}}> Gift Wrapping Algorithm </h1>
+        <div style={{display:"flex", justifyContent:"center", width:"75%", minWidth:"300px", flexDirection:"column"}}>
+            <h1 style={{margin:"0 auto", marginTop:"2em"}}> Gift Wrapping Algorithm </h1>
             <div style={{display:"flex", flexDirection:"column"}}>
-
                 <p className="algo-desc-paragraph">
                     In the two-dimensional case the algorithm is also known as Jarvis march after R. A. Jarvis, who published it in 1973;
                     it has O(nh) time complexity, where n is the number of points and h is the number of points on the convex hull.
@@ -107,8 +107,8 @@ export const GiftWrappingDescription = () => {
 
 export const PointInConvexPolygonDescription = () => {
     return(
-        <div style={{display:"flex", justifyContent:"center", width:"75%", minWidth:"300px"}}>
-            <h1 style={{position:"fixed", top:'1em', margin:"0 auto"}}> Point in Convex Polygon Algorithm </h1>
+        <div style={{display:"flex", justifyContent:"center", width:"75%", minWidth:"300px", flexDirection:"column"}}>
+            <h1 style={{margin:"0 auto", marginTop:"2em"}}> Point in Convex Polygon Algorithm </h1>
             <div style={{display:"flex", flexDirection:"column"}}>
 
                 <p className="algo-desc-paragraph">
@@ -147,6 +147,34 @@ export const PointInConvexPolygonDescription = () => {
                 <p className="algo-desc-paragraph">
                     Note that the polygon must be convex in order for this algorithm to work. If polygon is not convex, checking <i>orientation(reference_point, mid, test_point)</i>
                     is not enough to discard half of the points.
+                </p>
+
+            </div>
+        </div>
+    );
+}
+
+export const Triangulation = () => {
+    return(
+        <div style={{display:"flex", justifyContent:"center", width:"75%", minWidth:"300px", flexDirection:"column"}}>
+            <h1 style={{margin:"0 auto", marginTop:"2em"}}> Ear-cutting algorithm </h1>
+            <div style={{display:"flex", flexDirection:"column"}}>
+
+                <p className="algo-desc-paragraph">
+                    Ear-cutting algorithm is an algorithm for triangulation of simple polygons. Primary idea of the algorithm, as its name suggests, is 'cutting' polygon ears one by one.
+                    Now let's define precisely what is polygon ear.
+                </p>
+
+                <p className="algo-desc-paragraph">
+                    An ear of a polygon is a triangle formed by three consecutive vertices A, B , and C for which B is a convex vertex. B is called the ear tip.
+                    At such a vertex, the interior angle at the vertex is smaller than 180 degrees and the line segment from A to C lies completely inside the polygon.
+                    The ear has the property that no vertices of the polygon are contained in the triangle other than the three vertices of the triangle.
+                </p>
+
+                <p className="algo-desc-paragraph">
+                    It is proven that a polygon of four or more sides always has at least two nonoverlapping ears.
+                    This suggests a recursive approach to the triangulation. If you can locate an ear in a polygon with n ≥ 4 vertices and remove it,
+                    the remaining polygon has n−1 vertices and the process is repeated. A straightforward implementation of this will lead to an O(n^3) algorithm.
                 </p>
 
             </div>
