@@ -1,5 +1,5 @@
 import React from 'react';
-import {Circle, Line} from "react-konva";
+import {Circle, Line, Text} from "react-konva";
 
 // y coordinates on canvas are increasing when we go down, which is opposite to Cartesian coordinates
 const transformY = (points) => {
@@ -12,11 +12,18 @@ const transformY = (points) => {
 
 export const TriangulationSteps = ({stepNumber, iterations, pts}) => {
     let curr_it = iterations[stepNumber];
-    let {diagonals, triangle, isEar, pointInside, currentPoly} = curr_it;
+    let {diagonals, triangle, isEar, pointInside, currentPoly, message} = curr_it;
     let polygon = transformY(currentPoly);
 
     return (
         <>
+            {
+                stepNumber < iterations.length && message ?
+                <Text padding={20} align="center" width={window.innerWidth} fontSize={20}
+                      text={message}
+                      fill={isEar ? "green" : "red"}
+                /> : null
+            }
             {
                 pts ?
                     pts.map(({x, y}, i) => {

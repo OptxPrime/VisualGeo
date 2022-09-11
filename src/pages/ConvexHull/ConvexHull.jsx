@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Stage, Layer, Text, Circle, Line,} from 'react-konva';
+import {Stage, Layer, Text, Circle, Line, Group,} from 'react-konva';
 
 import './ConvexHull.css';
 import {grahamScan} from "../../geom/convex-hull";
@@ -9,21 +9,12 @@ import {GiftWrappingSteps} from "../../components/GiftWrappingSteps";
 import {AlgoDescription} from "../../components/AlgoDescription";
 import {NavLink} from "react-router-dom";
 
-const generateShapes = () => {
-    return [...Array(10)].map((_, i) => ({
-        id: i.toString(),
-        x: Math.random() * (window.innerWidth - 400) + 100,
-        y: Math.random() * (window.innerHeight - 400) + 100,
-        rotation: Math.random() * 180,
-        isDragging: false,
-    }));
-}
 
 // y coordinates on canvas are increasing when we go down, which is opposite to Cartesian coordinates
 const transformY = (points) => {
     return points.map(
         (element) => {
-            return {x: element.x, y: element.y * (-1)}
+            return {x: element.x, y: element.y * (-1), idx: element.idx}
         }
     );
 }
@@ -43,7 +34,7 @@ export const ConvexHull = () => {
 
     const handleAlgoChange = (e) => {
         setAlgo(e.target.value);
-        setStepNumber(1);
+        setStepNumber(0);
         setShowStepByStep(false);
         setHull([]);
         setIterations([]);
@@ -55,7 +46,7 @@ export const ConvexHull = () => {
     }
 
     const handleNewPoint = (e) => {
-        setPoints([...points, {x: e.evt.clientX, y: e.evt.clientY}]);
+        setPoints([...points, {x: e.evt.clientX, y: e.evt.clientY, idx: points.length + 1}]);
     }
 
     const clear = () => {
@@ -114,16 +105,34 @@ export const ConvexHull = () => {
                     :
                     <Stage width={window.innerWidth} height={window.innerHeight} onMouseDown={handleNewPoint}>
                         <Layer>
-                            <Text fill="white" padding={20} opacity={0.5} width={window.innerWidth} align="center"
-                                  text="Click to add point" fontSize={20}/>
                             {
-                                points.map(({x, y}) => {
-                                    return <Circle x={x} y={y} radius={5} fill="orange"/>
+                                !showStepByStep ?
+                                    <Text fill="white" padding={20} opacity={0.5} align="center" width={window.innerWidth}
+                                          fontSize={20}
+                                          text="Click to add point"
+                                    /> : null
+                            }
+                            {
+                                points.map(({x, y}, i) => {
+                                    // return <Circle x={x} y={y} radius={5} fill="orange"/>
+                                    return <Group x={x} y={y} >
+                                        <Circle radius={5} fill="magenta"/>
+                                        <Text
+                                            x={0}
+                                            y={-20}
+                                            fontSize={10}
+                                            text={i+1}
+                                            stroke="yellow"
+                                            strokeWidth={1}
+                                        />
+
+                                    </Group>;
                                 })
+
                             }
 
                             {
-                                !showStepByStep || stepNumber >= iterations.length ?
+                                !showStepByStep || stepNumber >= iterations.length  ?
                                     hull.map(({x, y}, i) => {
                                         return (
                                             <>
@@ -181,11 +190,11 @@ export const ConvexHull = () => {
                         <>
                             <button className="w3-btn w3-round-large w3-black w3-margin"
                                     onClick={() => {
-                                        if (stepNumber < iterations.length) setStepNumber(stepNumber + 1);
+                                        if (stepNumber < iterations.length - 1) setStepNumber(stepNumber + 1);
                                     }}
                             > +
                             </button>
-                            <p style={{display: "inline-block"}}> Step {stepNumber}/{iterations.length} </p>
+                            <p style={{display: "inline-block"}}> Step {stepNumber+1}/{iterations.length } </p>
                             <button className="w3-btn w3-round-large w3-black w3-margin"
                                     style={{display: "inline-block"}}
                                     onClick={() => {
@@ -197,7 +206,7 @@ export const ConvexHull = () => {
                         <button className="w3-btn w3-round-large w3-margin w3-black"
                                 onClick={() => {
                                     setShowStepByStep(true);
-                                    setStepNumber(1);
+                                    setStepNumber(0);
                                 }}
                         > Show steps </button> : null
                 }

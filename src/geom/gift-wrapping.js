@@ -6,12 +6,15 @@ const thull = (hull) => {
     return hull.map(h => {
         return {
             x: h.x,
-            y: h.y * (-1)
+            y: h.y * (-1),
+            idx : h.idx
         }
     });
 }
 
 export const giftWrapping = (points) => {
+
+    console.log(points)
 
     let n = points.length;
     let leftmost = 0;
@@ -22,6 +25,17 @@ export const giftWrapping = (points) => {
 
     let curr = leftmost, nxt;
     let hull = [points[leftmost]], iterations = [];
+
+    iterations.push(
+        {
+            message: `We start with leftmost point ${points[leftmost].idx} which is surely on a convex hull.`,
+            change:{
+                type: "algo-start"
+            }
+        }
+    );
+
+
     do {
         nxt = (curr + 1) % n;
         for (let i = 0; i < n; i++) {
@@ -35,7 +49,8 @@ export const giftWrapping = (points) => {
                         a: tY(points[curr]),
                         b: tY(points[i]),
                         c: tY(points[nxt])
-                    }
+                    },
+                    message: `Searching for next point Counter-Clockwise. Discarding ${points[nxt].idx}, new best candidate is ${points[i].idx}.`
                 });
                 nxt = i;
             } else {
@@ -47,7 +62,8 @@ export const giftWrapping = (points) => {
                         a: tY(points[curr]),
                         b: tY(points[i]),
                         c: tY(points[nxt])
-                    }
+                    },
+                    message: `Searching for next point Counter-Clockwise. ${points[nxt].idx} is still the best candidate`
                 });
             }
         }
@@ -56,11 +72,22 @@ export const giftWrapping = (points) => {
             hull: thull(hull),
             change: {
                 type: 'new-point',
-                a: points[nxt]
-            }
+                a: points[nxt],
+            },
+            message: `Next CCW point is ${points[nxt].idx}`
         });
         curr = nxt;
     } while (curr !== leftmost);
+
+    iterations.push(
+        {
+            hull: thull(hull),
+            message: `Reached leftmost point ${points[leftmost].idx} again, convex hull found.`,
+            change:{
+                type: "algo-finish"
+            }
+        }
+    );
 
     return {hull, iterations};
 }

@@ -30,10 +30,8 @@ export const triangulate = (points) => {
         return list.tail;
     }
 
-    // let pts = points.map((pt, i) => {return {pt, idx:i}}); // to do: remove index altogether
-    let pList = yallist.create(points); // to do: change to insert point with index
-
-    let diag = [], iterations = ["dummy"]; // dummy iteration only o achieve 1-indexing
+    let pList = yallist.create(points);
+    let diag = [], iterations = [];
     let curr = pList.head, prev = pList.head, nxt = pList.head;
     prev = prevEl(prev);
     nxt = nextEl(nxt);
@@ -43,7 +41,7 @@ export const triangulate = (points) => {
             let ear = true;
             let tmp = nxt;
             tmp = nextEl(tmp);
-            while(tmp != prev){
+            while(tmp !== prev){
                 if(isInsideTriangle(prev.value, curr.value, nxt.value, tmp.value)){
                     ear = false;
                     break;
@@ -55,7 +53,8 @@ export const triangulate = (points) => {
                 iterations.push({
                     diagonals: [...diag], isEar:true,
                     triangle:{a: tY(prev.value), b: tY(curr.value), c: tY(nxt.value)},
-                    currentPoly: pList.toArray()
+                    currentPoly: pList.toArray(),
+                    message: `Cut the ear, erase ear tip ${curr.value.idx} and continue from previous ear tip ${prev.value.idx}`
                 });
                 pList.removeNode(curr);
                 curr = prev;
@@ -65,7 +64,8 @@ export const triangulate = (points) => {
                     diagonals: [...diag], isEar:false,
                     triangle:{a: tY(prev.value), b: tY(curr.value), c: tY(nxt.value)},
                     pointInside: tY(tmp.value),
-                    currentPoly: pList.toArray()
+                    currentPoly: pList.toArray(),
+                    message: `Point ${tmp.value.idx} inside triangle, ${curr.value.idx} is not an ear tip. Skip to next potential ear tip ${nxt.value.idx}`
                 });
                 prev = curr;
                 curr = nxt;
@@ -75,7 +75,8 @@ export const triangulate = (points) => {
             iterations.push({
                 diagonals: [...diag], isEar:false,
                 triangle:{a: tY(prev.value), b: tY(curr.value), c: tY(nxt.value)},
-                currentPoly: pList.toArray()
+                currentPoly: pList.toArray(),
+                message: `Counter-clockwise turn, ${curr.value.idx} is not an ear tip. Skip to next potential ear tip ${nxt.value.idx}`
             });
             prev = curr;
             curr = nxt;

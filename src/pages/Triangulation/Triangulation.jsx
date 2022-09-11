@@ -4,7 +4,7 @@ import {Stage, Layer, Text, Circle, Line, Group} from 'react-konva';
 import {triangulate} from "../../geom/triangulation";
 import {NavLink} from "react-router-dom";
 import {AlgoDescription} from "../../components/AlgoDescription";
-import {doSegmentsIntersect, sortPointsCW} from "../../geom/helpers";
+import {doSegmentsIntersect} from "../../geom/helpers";
 import {TriangulationSteps} from "../../components/TriangulationSteps";
 
 
@@ -12,7 +12,7 @@ import {TriangulationSteps} from "../../components/TriangulationSteps";
 const transformY = (points) => {
     return points.map(
         (element) => {
-            return {x: element.x, y: element.y * (-1)}
+            return {x: element.x, y: element.y * (-1), idx: element.idx}
         }
     );
 }
@@ -48,7 +48,7 @@ export const Triangulation = () => {
 
     const handleNewPoint = (e) => {
         resetResult();
-        let newPoint =  {x: e.evt.clientX, y: e.evt.clientY};
+        let newPoint =  {x: e.evt.clientX, y: e.evt.clientY, idx: polygon.length + 1};
         let pts = [...polygon, newPoint];
         setPolygon(pts);
     }
@@ -105,9 +105,14 @@ export const Triangulation = () => {
                     :
                     <Stage width={window.innerWidth} height={window.innerHeight} onMouseDown={handleNewPoint}>
                         <Layer>
-                            <Text fill="white" padding={20} opacity={0.5} align="center" width={window.innerWidth}
-                                  text="Click to add point" fontSize={20}/>
 
+                            {
+                                !showStepByStep ?
+                                <Text fill="white" padding={20} opacity={0.5} align="center" width={window.innerWidth}
+                                      fontSize={20}
+                                      text="Click to add point"
+                                /> : null
+                            }
                             {
                                 polygon.map(({x, y}, i) => {
                                     return (
@@ -193,11 +198,11 @@ export const Triangulation = () => {
                                         }}
                                 > +
                                 </button>
-                                <p style={{display: "inline-block"}}> Step {stepNumber}/{iterations.length} </p>
+                                <p style={{display: "inline-block"}}> Step {stepNumber + 1} / {iterations.length + 1} </p>
                                 <button className="w3-btn w3-round-large w3-black w3-margin"
                                         style={{display: "inline-block"}}
                                         onClick={() => {
-                                            if (stepNumber > 1) setStepNumber(stepNumber - 1);
+                                            if (stepNumber > 0) setStepNumber(stepNumber - 1);
                                         }}> -
                                 </button>
                             </> :
@@ -205,7 +210,7 @@ export const Triangulation = () => {
                                 <button className="w3-btn w3-round-large w3-black"
                                         onClick={() => {
                                             setShowStepByStep(true);
-                                            setStepNumber(1);
+                                            setStepNumber(0);
                                         }}
                                 > Show steps </button> : null
                     }

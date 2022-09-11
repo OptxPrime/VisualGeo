@@ -19,8 +19,8 @@ export const grahamScan = (points) => {
     );
 
     points.sort((pt1, pt2) => {
-        if (pt1 == lowestPoint) return -1; // to guarantee that first point in array is lowest point. Without this, weird bugs hapoen
-        if (pt2 == lowestPoint) return 1;
+        if (pt1 === lowestPoint) return -1; // to guarantee that first point in array is lowest point. Without this, weird bugs hapoen
+        if (pt2 === lowestPoint) return 1;
         let o = orientation(lowestPoint, pt1, pt2);
         if (o === 0) { // if collinear, take closer point
             return (lowestPoint.x - pt1.x) * (lowestPoint.x - pt1.x)
@@ -33,6 +33,11 @@ export const grahamScan = (points) => {
     });
 
     let hull = [], iterations = [];
+    iterations.push({
+        change: {type: 'algo-start'},
+        message: `Sorting points with by polar angle with respect to the lowest point ${lowestPoint.idx}`
+    });
+
     for (let pt of points) {
         while (hull.length > 1 && !cw(hull[hull.length - 2], hull[hull.length - 1], pt)) {
             let change = {
@@ -41,14 +46,24 @@ export const grahamScan = (points) => {
                 b: tY(hull[hull.length - 1]),
                 c: tY(pt)
             };
+            iterations.push({
+                hull: thull(hull),
+                change,
+                message: `${hull[hull.length - 1].idx} removed from convex hull because orientation(${hull[hull.length - 2].idx},${hull[hull.length - 1].idx},${pt.idx}) = CCW.`
+            });
             hull.pop();
-            iterations.push({hull: thull(hull), change});
         }
         hull.push(pt);
         iterations.push({
             hull: thull(hull),
-            change: {type: 'add', a: tY(hull[hull.length - 1]), b: tY(pt)}
+            change: {type: 'add', a: tY(hull[hull.length - 1]), b: tY(pt)},
+            message: `${hull[hull.length - 1].idx} added to convex hull. Searching for next point clockwise.`
         });
     }
+    iterations.push({
+        hull: thull(hull),
+        change: {type: 'algo-finish'},
+        message: `Reached lowest point ${lowestPoint.idx}, convex hull found.`
+    });
     return {hull, iterations, sortedPoints: points};
 }

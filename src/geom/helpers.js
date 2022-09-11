@@ -32,7 +32,7 @@ export const doSegmentsIntersect = (p1, q1, p2, q2) => {
     let o4 = orientation(p2, q2, q1);
 
     // General case
-    if (o1 != o2 && o3 != o4)
+    if (o1 !== o2 && o3 !== o4)
         return true;
     // to do: add special cases
 }

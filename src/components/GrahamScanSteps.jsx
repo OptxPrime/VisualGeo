@@ -1,13 +1,19 @@
 import React from 'react';
-import {Circle, Line} from "react-konva";
+import {Circle, Line, Text} from "react-konva";
 
 export const GrahamScanSteps = ({stepNumber, iterations, allPoints}) => {
     
-    let current_hull = iterations[stepNumber].hull;
-    let iteration_change = iterations[stepNumber].change;
+    let {message, change : iteration_change, hull : current_hull} = iterations[stepNumber]
 
     return (
         <>
+            {
+                stepNumber < iterations.length && message ?
+                    <Text padding={20} align="center" width={window.innerWidth} fontSize={20}
+                          text={message}
+                          fill={iteration_change.type ==='add' ? "green" : iteration_change.type === "remove" ? "red" : "white"}
+                    /> : null
+            }
             {
                 allPoints ?
                     allPoints.map(({x, y}) => {
@@ -43,7 +49,16 @@ export const GrahamScanSteps = ({stepNumber, iterations, allPoints}) => {
                                             ]}
                                             stroke="blue"
                                         />
-                                        : null
+                                        : iteration_change.type === 'algo-finish' ? // special case when algo finishes - render segment between last and first point also
+                                            <Line
+                                                points={[
+                                                    x,
+                                                    y,
+                                                    current_hull[ current_hull.length - 1 ].x,
+                                                    current_hull[ current_hull.length - 1 ].y
+                                                ]}
+                                                stroke="blue"
+                                            /> : null
                                 }
                             </>
                         );
@@ -74,6 +89,16 @@ export const GrahamScanSteps = ({stepNumber, iterations, allPoints}) => {
                                     radius={5}
                                     fill="blue"
                             />
+                            {/*<Line*/}
+                            {/*    points={[*/}
+                            {/*        iteration_change.a.x,*/}
+                            {/*        iteration_change.a.y,*/}
+                            {/*        iteration_change.b.x,*/}
+                            {/*        iteration_change.b.y,*/}
+                            {/*    ]}*/}
+                            {/*    stroke="green"*/}
+                            {/*    width={10}*/}
+                            {/*/>*/}
                         </> : null
             }
         </>

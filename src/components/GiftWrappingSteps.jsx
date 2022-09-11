@@ -1,25 +1,33 @@
 import React from 'react';
-import {Circle, Line} from "react-konva";
+import {Circle, Line, Text} from "react-konva";
 
 export const GiftWrappingSteps = ({stepNumber, iterations}) => {
     
-    let current_hull = iterations[stepNumber].hull;
+    // let current_hull = hull;
     let bestCandidateSoFar = iterations[stepNumber].bestCandidateSoFar;
-    
+    let {hull : current_hull, change, message} = iterations[stepNumber];
+            
     return (
         <>
+            {
+                stepNumber < iterations.length && message ?
+                    <Text padding={20} align="center" width={window.innerWidth} fontSize={20}
+                          text={message}
+                          fill={change.type ==='good-check' ? "green" : change.type === "bad-check" ? "red" : "white"}
+                    /> : null
+            }
             {
                 bestCandidateSoFar ?
                     <Circle
                         x={bestCandidateSoFar.x}
                         y={bestCandidateSoFar.y}
                         radius={5}
-                        fill="yellow"
+                        fill="cyan"
                     /> : null
             }
             {
                 current_hull?
-                    iterations[stepNumber].hull.map(({x, y}, i) => {
+                    current_hull.map(({x, y}, i) => {
                         return(
                             <>
                                 <Circle x={x} y={y} radius={6} fill="pink"/>
@@ -28,8 +36,8 @@ export const GiftWrappingSteps = ({stepNumber, iterations}) => {
                                         points={[
                                             x,
                                             y,
-                                            iterations[stepNumber].hull[i - 1].x,
-                                            iterations[stepNumber].hull[i - 1].y
+                                            current_hull[i - 1].x,
+                                            current_hull[i - 1].y
                                         ]}
                                         stroke="blue"
                                     /> : null
@@ -40,49 +48,49 @@ export const GiftWrappingSteps = ({stepNumber, iterations}) => {
                     }) : null
             }
             {
-                iterations[stepNumber].change.type === 'good-check' ?
+                change.type === 'good-check' ?
                     <>
                         <Line
                             points={[
-                                iterations[stepNumber].change.a.x,
-                                iterations[stepNumber].change.a.y,
-                                iterations[stepNumber].change.b.x,
-                                iterations[stepNumber].change.b.y,
-                                iterations[stepNumber].change.c.x,
-                                iterations[stepNumber].change.c.y
+                                change.a.x,
+                                change.a.y,
+                                change.b.x,
+                                change.b.y,
+                                change.c.x,
+                                change.c.y
                             ]}
                             stroke="green"
                         />
                         <Line
                             points={[
-                                iterations[stepNumber].change.a.x,
-                                iterations[stepNumber].change.a.y,
-                                iterations[stepNumber].change.c.x,
-                                iterations[stepNumber].change.c.y
+                                change.a.x,
+                                change.a.y,
+                                change.c.x,
+                                change.c.y
                             ]}
                             stroke="white"
                             dash={[3,3]}
                             opacity={0.5}
                         />
-                    </> : iterations[stepNumber].change.type === 'bad-check' ?
+                    </> : change.type === 'bad-check' ?
                         <>
                             <Line
                                 points={[
-                                    iterations[stepNumber].change.a.x,
-                                    iterations[stepNumber].change.a.y,
-                                    iterations[stepNumber].change.b.x,
-                                    iterations[stepNumber].change.b.y,
-                                    iterations[stepNumber].change.c.x,
-                                    iterations[stepNumber].change.c.y
+                                    change.a.x,
+                                    change.a.y,
+                                    change.b.x,
+                                    change.b.y,
+                                    change.c.x,
+                                    change.c.y
                                 ]}
                                 stroke="red"
                             />
                             <Line
                                 points={[
-                                    iterations[stepNumber].change.a.x,
-                                    iterations[stepNumber].change.a.y,
-                                    iterations[stepNumber].change.c.x,
-                                    iterations[stepNumber].change.c.y
+                                    change.a.x,
+                                    change.a.y,
+                                    change.c.x,
+                                    change.c.y
                                 ]}
                                 stroke="white"
                                 dash={[3,3]}
