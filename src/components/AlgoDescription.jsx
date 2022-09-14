@@ -47,7 +47,7 @@ const GrahamScanDescription = () => {
                 </p>
 
                 <h2 className="algo-desc-paragraph"> Further reading </h2>
-                <ul className="algo-desc-paragraph">
+                <ul className="algo-desc-paragraph" style={{marginBottom:"3em"}}>
                     <li> <a href="https://cp-algorithms.com/geometry/convex-hull.html"> CP Algorithms - Convex Hull construction </a> </li>
                     <li> <a href="https://iq.opengenus.org/graham-scan-convex-hull/"> Graham Scan Algorithm </a> </li>
                 </ul>
@@ -96,7 +96,7 @@ export const GiftWrappingDescription = () => {
                 </p>
 
                 <h2 className="algo-desc-paragraph"> Further reading </h2>
-                <ul className="algo-desc-paragraph">
+                <ul className="algo-desc-paragraph" style={{marginBottom:"3em"}}>
                     <li> <a href="https://iq.opengenus.org/gift-wrap-jarvis-march-algorithm-convex-hull/"> Gift Wrapping algorithm </a> </li>
                     <li> <a href="https://en.wikipedia.org/wiki/Gift_wrapping_algorithm"> Gift Wrapping Algorithn - Wikipedia </a> </li>
                 </ul>
@@ -108,7 +108,7 @@ export const GiftWrappingDescription = () => {
 export const PointInConvexPolygonDescription = () => {
     return(
         <div style={{display:"flex", justifyContent:"center", width:"75%", minWidth:"300px", flexDirection:"column"}}>
-            <h1 style={{margin:"0 auto", marginTop:"2em"}}> Point in Convex Polygon Algorithm </h1>
+            <h1 style={{margin:"0 auto", marginTop:"2em"}}> Point in a Convex Polygon Algorithm </h1>
             <div style={{display:"flex", flexDirection:"column"}}>
 
                 <p className="algo-desc-paragraph">
@@ -149,6 +149,12 @@ export const PointInConvexPolygonDescription = () => {
                     is not enough to discard half of the points.
                 </p>
 
+                <h2 className="algo-desc-paragraph"> Further reading </h2>
+                <ul className="algo-desc-paragraph" style={{marginBottom:"3em"}}>
+                    <li> <a href="https://cp-algorithms.com/geometry/point-in-convex-polygon.html"> Point in Convex Polygon</a>  - in depth explanation with special cases </li>
+                    <li> <a href="https://www.youtube.com/watch?v=aoxOPx2BIHE"> Video</a>  - brief explanation with nice visuals </li>
+
+                </ul>
             </div>
         </div>
     );
@@ -166,8 +172,9 @@ export const Triangulation = () => {
                 </p>
 
                 <p className="algo-desc-paragraph">
-                    An ear of a polygon is a triangle formed by three consecutive vertices A, B , and C for which B is a convex vertex. B is called the ear tip.
+                    An ear of a polygon is a triangle formed by three consecutive vertices A, B , and C for which B is a convex vertex.
                     At such a vertex, the interior angle at the vertex is smaller than 180 degrees and the line segment from A to C lies completely inside the polygon.
+                    B is called the ear tip.
                     The ear has the property that no vertices of the polygon are contained in the triangle other than the three vertices of the triangle.
                 </p>
 
@@ -175,7 +182,33 @@ export const Triangulation = () => {
                     It is proven that a polygon of four or more sides always has at least two nonoverlapping ears.
                     This suggests a recursive approach to the triangulation. If you can locate an ear in a polygon with n ≥ 4 vertices and remove it,
                     the remaining polygon has n−1 vertices and the process is repeated. A straightforward implementation of this will lead to an O(n^3) algorithm.
+                    With some careful attention to details, the ear clipping can be done in O(n^2) time.
                 </p>
+
+                <p className="algo-desc-paragraph">
+                    Here is the outline of the algorithm, without going into details about each step:
+                    <ul>
+                        <li> We keep vertices in linked list for efficient ear removal  </li>
+                        <li>
+                            Iterate over vertices. For every vertex V, check if triangle formed by it and its neighbours is an ear. First condition is that V is convex vertex of
+                            the polygon. Second condition is that triangle formed by V and its neighbours does not contain any other vertex of the polygon inside. This can by done
+                            by looping through the vertices in O(n). Some optimizations are possible on this step, but we will ignore them here for simplicity.
+                        </li>
+                        <li>
+                            If V was not an ear, we simply skip to next vertex. If it was, we discard it from linked list. Removing an ear tip can affect its neighbours.
+                            It can be shown that convex neighbours remain convex. Also, concave (or reflex) vertices can become convex when their neighbour is removed. Therefore,
+                            if V was an ear, we must go back to previous vertex and check if now it became an ear.
+                        </li>
+                        <li>
+                            We proceed like this until we are left with a triangle.
+                        </li>
+                    </ul>
+                </p>
+                <h2 className="algo-desc-paragraph"> Further reading </h2>
+                <ul className="algo-desc-paragraph" style={{marginBottom:"3em"}}>
+                    <li> <a href="https://www.geometrictools.com/Documentation/TriangulationByEarClipping.pdf"> Triangulation by Ear Clipping </a> </li>
+                    <li> <a href="https://en.wikipedia.org/wiki/Polygon_triangulation"> Polygon Triangulation </a> </li>
+                </ul>
 
             </div>
         </div>

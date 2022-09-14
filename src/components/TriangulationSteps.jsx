@@ -25,28 +25,27 @@ export const TriangulationSteps = ({stepNumber, iterations, pts}) => {
                 /> : null
             }
             {
-                pts ?
-                    pts.map(({x, y}, i) => {
-                        return (
-                            <>
-                                <Circle x={x} y={y} radius={6} fill="pink"/>
-                                {
-                                    i > 0 ?
-                                        <Line
-                                            points={[x, y, pts[i - 1].x, pts[i - 1].y]}
-                                            stroke="blue"
-                                            opacity={0.2}
-                                        />
-                                        :
-                                        <Line
-                                            points={[x, y, pts[pts.length - 1].x, pts[pts.length - 1].y]}
-                                            stroke="blue"
-                                            opacity={0.2}
-                                        />
-                                }
-                            </>
-                        );
-                    }) : null
+                pts?.map(({x, y}, i) => {
+                    return (
+                        <>
+                            <Circle x={x} y={y} radius={6} fill="pink"/>
+                            {
+                                i > 0 ?
+                                    <Line
+                                        points={[x, y, pts[i - 1].x, pts[i - 1].y]}
+                                        stroke="blue"
+                                        opacity={0.2}
+                                    />
+                                    :
+                                    <Line
+                                        points={[x, y, pts[pts.length - 1].x, pts[pts.length - 1].y]}
+                                        stroke="blue"
+                                        opacity={0.2}
+                                    />
+                            }
+                        </>
+                    );
+                })
             }
             {
                 polygon.map(({x, y}, i) => {
@@ -66,7 +65,7 @@ export const TriangulationSteps = ({stepNumber, iterations, pts}) => {
                 })
             }
             {
-                diagonals && diagonals.length ? diagonals.map(({from, to}) => {
+                diagonals?.map(({from, to}) => {
                     return(
                         <>
                             <Line
@@ -77,7 +76,7 @@ export const TriangulationSteps = ({stepNumber, iterations, pts}) => {
                             />
                         </>
                     );
-                }) : null
+                })
             }
             {
                 isEar ? <Line

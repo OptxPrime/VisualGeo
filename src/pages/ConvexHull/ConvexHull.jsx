@@ -53,6 +53,10 @@ export const ConvexHull = () => {
         setShowStepByStep(false);
         setPoints([]);
         setSortedPoints([]);
+        resetResult();
+    }
+
+    const resetResult = () => {
         setHull([]);
         setIterations([]);
         setError('');
@@ -114,7 +118,6 @@ export const ConvexHull = () => {
                             }
                             {
                                 points.map(({x, y}, i) => {
-                                    // return <Circle x={x} y={y} radius={5} fill="orange"/>
                                     return <Group x={x} y={y} >
                                         <Circle radius={5} fill="magenta"/>
                                         <Text
@@ -160,8 +163,6 @@ export const ConvexHull = () => {
                                                 <GiftWrappingSteps stepNumber={stepNumber} iterations={iterations}/>
 
                                                 : null : null
-                                // : algo === 'gift' ?
-
                             }
                         </Layer>
                     </Stage>
@@ -172,7 +173,6 @@ export const ConvexHull = () => {
                 <div>
                     <input className="w3-margin-left w3-margin-right" type="radio" value="graham" name="algo" checked={algo === 'graham'} onChange={handleAlgoChange}/> Graham Scan
                     <input className="w3-margin-left w3-margin-right" type="radio" value="gift" name="algo" checked={algo === 'gift'} onChange={handleAlgoChange}/> Gift Wrapping
-                    <button className="w3-margin-left w3-margin-right w3-btn w3-black w3-round-large" onClick={()=>clear()}> Clear points </button>
                 </div>
                 <br/>
                 <button className="w3-btn w3-blue w3-margin w3-round-large" onClick={() => {
@@ -210,6 +210,18 @@ export const ConvexHull = () => {
                                 }}
                         > Show steps </button> : null
                 }
+                <div>
+                    <button className="w3-margin-left w3-margin-right w3-btn w3-black w3-round-large" onClick={()=>clear()}> Clear points </button>
+                    <button className="w3-btn w3-round-large w3-black w3-margin"
+                            style={{display: "inline-block"}}
+                            onClick={() => {
+                                setPoints(points.slice(0, -1));
+                                setShowStepByStep(false);
+                                resetResult();
+                            }}
+                    > Undo
+                    </button>
+                </div>
 
             </div> : null}
         </>

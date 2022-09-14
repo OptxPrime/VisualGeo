@@ -153,10 +153,9 @@ export const PointInConvexPolygon = () => {
                                onChange={handleModeChange}/> Polygon
                         <input className="w3-margin-left w3-margin-right" type="radio" value="point" checked={mode === 'point'} name="mode"
                                onChange={handleModeChange}/> Point
-                        <button className="w3-margin-left w3-margin-right w3-btn w3-black w3-round-large" onClick={()=>clear()}> Clear points </button>
                     </div>
 
-                    <button className="w3-btn w3-blue w3-round-large" onClick={() => {
+                    <button className="w3-btn w3-blue w3-round-large w3-margin" onClick={() => {
                         pointInsidePolygon();
                     }
                     }>Check
@@ -192,6 +191,18 @@ export const PointInConvexPolygon = () => {
                                         }}
                                 > Show steps </button> : null
                     }
+                    <div>
+                        <button className="w3-margin-left w3-margin-right w3-btn w3-black w3-round-large" onClick={()=>clear()}> Clear points </button>
+                        <button className="w3-btn w3-round-large w3-black w3-margin"
+                                style={{display: "inline-block"}}
+                                onClick={() => {
+                                    setPolygon(polygon.slice(0, -1));
+                                    setShowStepByStep(false);
+                                    resetResult();
+                                }}
+                        > Undo (polygon)
+                        </button>
+                    </div>
                 </div>:null
             }
         </>

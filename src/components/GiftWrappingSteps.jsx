@@ -2,8 +2,7 @@ import React from 'react';
 import {Circle, Line, Text} from "react-konva";
 
 export const GiftWrappingSteps = ({stepNumber, iterations}) => {
-    
-    // let current_hull = hull;
+
     let bestCandidateSoFar = iterations[stepNumber].bestCandidateSoFar;
     let {hull : current_hull, change, message} = iterations[stepNumber];
             
@@ -26,26 +25,25 @@ export const GiftWrappingSteps = ({stepNumber, iterations}) => {
                     /> : null
             }
             {
-                current_hull?
-                    current_hull.map(({x, y}, i) => {
-                        return(
-                            <>
-                                <Circle x={x} y={y} radius={6} fill="pink"/>
-                                {
-                                    (i > 0) ? <Line
-                                        points={[
-                                            x,
-                                            y,
-                                            current_hull[i - 1].x,
-                                            current_hull[i - 1].y
-                                        ]}
-                                        stroke="blue"
-                                    /> : null
-                                }
-                            </>
-                        );
+                current_hull?.map(({x, y}, i) => {
+                    return(
+                        <>
+                            <Circle x={x} y={y} radius={6} fill="pink"/>
+                            {
+                                (i > 0) ? <Line
+                                    points={[
+                                        x,
+                                        y,
+                                        current_hull[i - 1].x,
+                                        current_hull[i - 1].y
+                                    ]}
+                                    stroke="blue"
+                                /> : null
+                            }
+                        </>
+                    );
 
-                    }) : null
+                })
             }
             {
                 change.type === 'good-check' ?

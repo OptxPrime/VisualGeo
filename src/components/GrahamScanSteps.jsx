@@ -15,54 +15,52 @@ export const GrahamScanSteps = ({stepNumber, iterations, allPoints}) => {
                     /> : null
             }
             {
-                allPoints ?
-                    allPoints.map(({x, y}) => {
-                        return(
-                            <Line
-                            points={[
-                                x,
-                                y,
-                                allPoints[0].x,
-                                allPoints[0].y
-                            ]}
-                            stroke="white"
-                            dash={[3,3]}
-                            opacity={0.5}
-                        />
-                        );
-                    }) : null
+                allPoints?.map(({x, y}) => {
+                    return(
+                        <Line
+                        points={[
+                            x,
+                            y,
+                            allPoints[0].x,
+                            allPoints[0].y
+                        ]}
+                        stroke="white"
+                        dash={[3,3]}
+                        opacity={0.5}
+                    />
+                    );
+                })
             }
             {
-               current_hull ?
-                   current_hull.map(({x, y}, i) => {
-                        return (
-                            <>
-                                <Circle x={x} y={y} radius={6} fill="pink"/>
-                                {
-                                    i > 0 ?
+               current_hull?.map(({x, y}, i) => {
+                    return (
+                        <>
+                            <Circle x={x} y={y} radius={6} fill="pink"/>
+                            {
+                                i > 0 ?
+                                    <Line
+                                        points={[
+                                            x,
+                                            y,
+                                           current_hull[i - 1].x,
+                                           current_hull[i - 1].y
+                                        ]}
+                                        stroke="blue"
+                                    />
+                                    : iteration_change.type === 'algo-finish' ? // special case when algo finishes - render segment between last and first point also
                                         <Line
                                             points={[
                                                 x,
                                                 y,
-                                               current_hull[i - 1].x,
-                                               current_hull[i - 1].y
+                                                current_hull[ current_hull.length - 1 ].x,
+                                                current_hull[ current_hull.length - 1 ].y
                                             ]}
                                             stroke="blue"
-                                        />
-                                        : iteration_change.type === 'algo-finish' ? // special case when algo finishes - render segment between last and first point also
-                                            <Line
-                                                points={[
-                                                    x,
-                                                    y,
-                                                    current_hull[ current_hull.length - 1 ].x,
-                                                    current_hull[ current_hull.length - 1 ].y
-                                                ]}
-                                                stroke="blue"
-                                            /> : null
-                                }
-                            </>
-                        );
-                    }) : null
+                                        /> : null
+                            }
+                        </>
+                    );
+                })
             }
             {
                 iteration_change.type === 'remove' ?
@@ -89,16 +87,6 @@ export const GrahamScanSteps = ({stepNumber, iterations, allPoints}) => {
                                     radius={5}
                                     fill="blue"
                             />
-                            {/*<Line*/}
-                            {/*    points={[*/}
-                            {/*        iteration_change.a.x,*/}
-                            {/*        iteration_change.a.y,*/}
-                            {/*        iteration_change.b.x,*/}
-                            {/*        iteration_change.b.y,*/}
-                            {/*    ]}*/}
-                            {/*    stroke="green"*/}
-                            {/*    width={10}*/}
-                            {/*/>*/}
                         </> : null
             }
         </>

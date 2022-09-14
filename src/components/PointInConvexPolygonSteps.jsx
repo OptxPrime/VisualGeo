@@ -7,34 +7,33 @@ export const PointInConvexPolygonSteps = ({stepNumber, iterations, p}) => {
     return (
         <>
             {
-                poly ?
-                    poly.map(({x, y}, i) => {
-                        return (
-                            <>
-                                <Circle x={x} y={y} radius={6} fill={i === 0 ? "yellow" : " pink"}/>
-                                {
-                                    i > 0 ?
-                                        <Line
-                                            points={[
-                                                x,
-                                                y,
-                                                poly[i - 1].x,
-                                                poly[i - 1].y
-                                            ]}
-                                            stroke="blue"/>
-                                        :
-                                        <Line
-                                            points={[
-                                                x,
-                                                y,
-                                                poly[poly.length - 1].x,
-                                                poly[poly.length - 1].y
-                                            ]}
-                                            stroke="blue"/>
-                                }
-                            </>
-                        );
-                    }) : null
+                poly?.map(({x, y}, i) => {
+                    return (
+                        <>
+                            <Circle x={x} y={y} radius={6} fill={i === 0 ? "yellow" : " pink"}/>
+                            {
+                                i > 0 ?
+                                    <Line
+                                        points={[
+                                            x,
+                                            y,
+                                            poly[i - 1].x,
+                                            poly[i - 1].y
+                                        ]}
+                                        stroke="blue"/>
+                                    :
+                                    <Line
+                                        points={[
+                                            x,
+                                            y,
+                                            poly[poly.length - 1].x,
+                                            poly[poly.length - 1].y
+                                        ]}
+                                        stroke="blue"/>
+                            }
+                        </>
+                    );
+                })
             }
             {
                 curr_it.type !== 'triangle-check' ?
